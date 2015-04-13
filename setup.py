@@ -11,6 +11,7 @@ setup(name='pycat',
       long_description=long_description,
       author='Alistair Lynn',
       author_email='alistair@alynn.co.uk',
+      url='https://github.com/prophile/pycat',
       classifiers=[
         'Development Status :: 3 - Alpha',
         'Environment :: Console',

@@ -17,6 +17,8 @@ def talk(socket, source=sys.stdin.buffer, sink=sys.stdout.buffer):
         readable, writable, exceptional = select.select((socket, source),
                                                         (),
                                                         (socket, source, sink))
+        if exceptional:
+            break  # Leave in case of closed sockets and such
         if source in readable:
             socket.send(source.readline())
         if socket in readable:

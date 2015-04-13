@@ -23,7 +23,10 @@ def main(args=sys.argv[1:]):
     """
     parser = argument_parser()
     settings = parser.parse_args(args)
-    sock = socket.create_connection((settings.hostname, settings.port))
-    sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
-    sock.setblocking(False)
-    talk(sock)
+    try:
+        sock = socket.create_connection((settings.hostname, settings.port))
+        sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
+        sock.setblocking(False)
+        talk(sock)
+    except KeyboardInterrupt:
+        sock.close() # Disregard Control-C, as this is probably how the user will exit.

@@ -1,30 +1,32 @@
-"""Command-line interface to pycat."""
+"""usage: pycat [options] <hostname> <port>
 
-import argparse
+netcat, in Python
+
+positional arguments:
+  hostname    host to which to connect
+  port        port number to which to connect
+
+optional arguments:
+  -h, --help   show this help message and exit
+"""
+
+from docopt import docopt
 import sys
 import socket
 from .talk import talk
 
 
-def argument_parser():
-    """Generate an `argparse` argument parser for pycat's arguments."""
-    parser = argparse.ArgumentParser(description='netcat, in Python')
-    parser.add_argument('hostname', help='host to which to connect')
-    parser.add_argument('port', help='port number to which to connect')
-    return parser
-
-
-def main(args=sys.argv[1:]):
+def main(args=None):
     """Run, as if from the command-line.
 
     args is a set of arguments to run with, defaulting to taking arguments from
     `sys.argv`. It should **not** include the name of the program as the first
     argument.
     """
-    parser = argument_parser()
-    settings = parser.parse_args(args)
+    settings = docopt(__doc__, argv=args)
     try:
-        sock = socket.create_connection((settings.hostname, settings.port))
+        sock = socket.create_connection((settings['<hostname>'],
+                                         int(settings['<port>'])))
         sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
         sock.setblocking(False)
         talk(sock)

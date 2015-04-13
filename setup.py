@@ -22,6 +22,9 @@ setup(name='pycat',
         'Topic :: System :: Networking',
         'Topic :: Utilities'
       ],
+      install_requires=[
+        'docopt >=0.6, <0.7'
+      ],
       setup_requires=[
         'nose >=1.3, <2'
       ],

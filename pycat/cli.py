@@ -2,6 +2,8 @@
 
 import argparse
 import sys
+import socket
+from .talk import talk
 
 
 def argument_parser():
@@ -20,5 +22,7 @@ def main(args=sys.argv[1:]):
     argument.
     """
     parser = argument_parser()
-    args = parser.parse_args(args)
-    print(args)
+    settings = parser.parse_args(args)
+    sock = socket.create_connection((settings.hostname, settings.port))
+    sock.setblocking(False)
+    talk(sock)

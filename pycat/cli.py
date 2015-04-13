@@ -30,3 +30,5 @@ def main(args=sys.argv[1:]):
         talk(sock)
     except KeyboardInterrupt:
         sock.close() # Disregard Control-C, as this is probably how the user will exit.
+    except ConnectionError as e:
+        print(str(e), file=sys.stderr)

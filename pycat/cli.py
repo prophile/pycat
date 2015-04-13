@@ -1,4 +1,6 @@
-"""usage: pycat [options] <hostname> <port>
+"""Usage:
+  pycat [options] <hostname> <port>
+  pycat --listen <port>
 
 netcat, in Python
 
@@ -25,8 +27,16 @@ def main(args=None):
     """
     settings = docopt(__doc__, argv=args)
     try:
-        sock = socket.create_connection((settings['<hostname>'],
-                                         int(settings['<port>'])))
+        if settings['--listen']:
+            listener = socket.socket(socket.AF_INET6, socket.SOCK_STREAM)
+            listener.bind(('::', int(settings['<port>']), 0, 0))
+            listener.listen(1)
+            sock, addr = listener.accept()
+            print('Got connection from {}'.format(addr), file=sys.stderr)
+            listener.close()
+        else:
+            sock = socket.create_connection((settings['<hostname>'],
+                                             int(settings['<port>'])))
         sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
         sock.setblocking(False)
         talk(sock)

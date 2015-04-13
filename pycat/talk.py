@@ -1,11 +1,7 @@
 """Communication link driver."""
 
 import sys
-import selectors
-
-
-CLIENT_TO_SERVER = object()
-SERVER_TO_CLIENT = object()
+import select
 
 
 def talk(socket, source=sys.stdin.buffer, sink=sys.stdout.buffer):
@@ -17,15 +13,12 @@ def talk(socket, source=sys.stdin.buffer, sink=sys.stdout.buffer):
 
     OUTPUT_BUFFER_SIZE = 1024
 
-    with selectors.DefaultSelector() as selector:
-        selector.register(source, selectors.EVENT_READ, CLIENT_TO_SERVER)
-        selector.register(socket, selectors.EVENT_READ, SERVER_TO_CLIENT)
-        while True:
-            for key, events in selector.select():
-                if key.data is CLIENT_TO_SERVER:
-                    data = source.readline()
-                    socket.send(data)
-                elif key.data is SERVER_TO_CLIENT:
-                    data = socket.recv(OUTPUT_BUFFER_SIZE)
-                    sink.write(data)
-                    sink.flush()
+    while True:
+        readable, writable, exceptional = select.select((socket, source),
+                                                        (),
+                                                        (socket, source, sink))
+        if source in readable:
+            socket.send(source.readline())
+        if socket in readable:
+            sink.write(socket.recv(OUTPUT_BUFFER_SIZE))
+            sink.flush()

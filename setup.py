@@ -5,7 +5,7 @@ with open('README.rst') as f:
     long_description = f.read()
 
 setup(name='pycat',
-      version='0.1.0',
+      version='0.1.1',
       packages=find_packages(),
       description='netcat, in Python',
       long_description=long_description,

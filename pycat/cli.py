@@ -29,6 +29,7 @@ def main(args=sys.argv[1:]):
         sock.setblocking(False)
         talk(sock)
     except KeyboardInterrupt:
-        sock.close() # Disregard Control-C, as this is probably how the user will exit.
+        # Disregard Control-C, as this is probably how the user will exit.
+        sock.close()
     except ConnectionError as e:
         print(str(e), file=sys.stderr)
